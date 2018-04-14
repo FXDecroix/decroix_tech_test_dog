@@ -9,16 +9,23 @@ import os, sys
 import csv
 import numpy as np
 import cv2
+import argparse
 from sklearn.model_selection import train_test_split
 
-width=256
-height=256
+parser = argparse.ArgumentParser()
+parser.add_argument("resolution", type=int, help="resolution of the input images")
+parser.add_argument("dir", type=str, help="path of the images directory")
 
-dir_data = '/Users/fixdecroix/Downloads/training_challenge' # ToDo : argparse
+args = parser.parse_args()
+
+width = args.resolution
+height = args.resolution
+dir_data = args.dir
+
 dir_images= os.path.join(dir_data,'images')
 extension = '.jpg'
 
-full_dataset = np.empty((10000, 256, 256, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
+full_dataset = np.empty((10000, width, height, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
 labels = np.empty((10000,), dtype=np.uint8)
 
 with open(os.path.join(dir_data,'labels.csv')) as labelfile:
