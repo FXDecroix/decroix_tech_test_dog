@@ -1,50 +1,41 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  5 18:44:29 2018
 
-@author: fixdecroix
-"""
 import os, sys
-import csv
 import numpy as np
-import cv2
-import argparse
-from sklearn.model_selection import train_test_split
+import csv
+from keras.preprocessing import image
+from keras.applications.resnet50 import preprocess_input
 
-parser = argparse.ArgumentParser()
-parser.add_argument("resolution", type=int, help="resolution of the input images")
-parser.add_argument("dir", type=str, help="path of the images directory")
+def load_dataset(path, img_resolution):
+    
+    dir_images= os.path.join(path,'images')
+    extension = '.jpg'
 
-args = parser.parse_args()
+    full_dataset = np.empty((10000, img_resolution, img_resolution, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
+    labels = np.empty((10000,), dtype=np.uint8)
 
-width = args.resolution
-height = args.resolution
-dir_data = args.dir
-
-dir_images= os.path.join(dir_data,'images')
-extension = '.jpg'
-
-full_dataset = np.empty((10000, width, height, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
-labels = np.empty((10000,), dtype=np.uint8)
-
-with open(os.path.join(dir_data,'labels.csv')) as labelfile:
-    next(labelfile) # skip first line
-    labelreader = csv.reader(labelfile, delimiter = ',')
+    with open(os.path.join(path,'labels.csv')) as labelfile:
+        next(labelfile) # skip first line
+        labelreader = csv.reader(labelfile, delimiter = ',')
    
-    for i, row in enumerate(labelreader):
-        img = cv2.imread(os.path.join(dir_images,row[0]+extension), cv2.IMREAD_COLOR)
-        full_dataset[i, ...] = cv2.resize(img,(width,height),interpolation = cv2.INTER_AREA) # INTER_AREA better for shrinking
-        labels[i] = int(row[1])
-        
-        sys.stdout.write('\r')
-        sys.stdout.write("Load and resize dataset : [%-20s] %d%%" % ('='*int(i/500+1), i/100+1))
-        sys.stdout.flush()
-        
-# split into a training and testing set
-X_train, X_test, y_train, y_test = train_test_split(full_dataset, labels, test_size=0.1, random_state=42)            
-
+        for i, row in enumerate(labelreader):
+            img = image.load_img(os.path.join(dir_images,row[0]+extension), target_size=(img_resolution, img_resolution))
+            img = image.img_to_array(img)
+                
+            full_dataset[i, ...] = preprocess_input(img)
+            labels[i] = int(row[1])
             
+            sys.stdout.write('\r')
+            sys.stdout.write("Load and resize dataset : [%-20s] %d%%" % ('='*int(i/500+1), i/100+1))
+            sys.stdout.flush()
+            
+    sys.stdout.write('\n')
+    return full_dataset, labels
+
+
+
+
 
 
 
