@@ -3,7 +3,7 @@
 
 import os
 import matplotlib.pyplot as plt
-from .set_dataset import load_dataset
+from .set_dataset import load_dataset, split_augment_data
 from .set_model import setup_model
 from keras.utils import np_utils
 import pickle
@@ -12,9 +12,18 @@ import argparse
 def train_model(data_path, res_path, img_resolution, epochs=100, batch_size=32, save_weights=True, save_history=True):
     
     data, labels = load_dataset(data_path, img_resolution)
-    labels = np_utils.to_categorical(labels, num_classes=2)
+    #labels = np_utils.to_categorical(labels, num_classes=1)
+    
+    train_generator, val_generator, len_train, len_val = split_augment_data(data, labels, batch_size)
+    
     model = setup_model(img_resolution)
-    history = model.fit(data[4951:5049], labels[4951:5049], validation_split=0.2, epochs=epochs, batch_size=batch_size)
+            
+    history = model.fit_generator(
+        train_generator,
+        steps_per_epoch=len_train/batch_size,
+        epochs=epochs,
+        validation_data=val_generator,
+        validation_steps=len_val/batch_size)
     
     if save_weights==True:
         weights_filename = 'weights'+str(img_resolution)+'.h5'
