@@ -16,6 +16,6 @@ setup(name='decroix_tech_test_dog',
       author='F.X. Decroix',
       author_email='francoisxavier.decroix@gmail.com',
       url='https://github.com/FXDecroix/decroix_tech_test_dog',
-      py_modules=['dog_classif'],
+      packages=['multires_classif'],
       )
 

@@ -3,13 +3,13 @@
 
 import os
 import matplotlib.pyplot as plt
-from set_dataset import load_dataset
-from set_model import setup_model
+from .set_dataset import load_dataset
+from .set_model import setup_model
 from keras.utils import np_utils
 import pickle
 import argparse
 
-def train_model(data_path, res_path, img_resolution, epochs=10, batch_size=8, save_weights=True, save_history=True):
+def train_model(data_path, res_path, img_resolution, epochs=100, batch_size=32, save_weights=True, save_history=True):
     
     data, labels = load_dataset(data_path, img_resolution)
     labels = np_utils.to_categorical(labels, num_classes=2)
@@ -60,15 +60,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("data_path", type=str, help="path to the data")
     parser.add_argument("res_path", type=str, help="path to the output directory")
+    parser.add_argument("-e", "--epochs", type=int, help="number of epochs",default=32)
+    parser.add_argument("-b", "--batch_size", type=int, help="batch_size",default=100)
     
     args = parser.parse_args()
     data_path = args.data_path
     res_path = args.res_path
+    epochs = args.epochs
+    batch_size = args.batch_size
     
     # Train models
 
-    model256, history256 = train_model(data_path, res_path, 256, epochs=2, batch_size=32)
-    model512, history512 = train_model(data_path, res_path, 512, epochs=2, batch_size=32)
+    model256, history256 = train_model(data_path, res_path, 256, epochs=epochs, batch_size=batch_size)
+    model512, history512 = train_model(data_path, res_path, 512, epochs=epochs, batch_size=batch_size)
 
     histories = [history256, history512]
     resolutions = [256,512]
