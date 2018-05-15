@@ -7,8 +7,8 @@ from keras.layers import GlobalAveragePooling2D, Dense
 
 def setup_model(img_resolution):
     base_model = ResNet50(include_top=False, weights='imagenet', input_shape = (img_resolution, img_resolution, 3))
-    for layer in base_model.layers:
-        layer.trainable = False
+    #for layer in base_model.layers:
+    #    layer.trainable = False
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     predictions = Dense(2, activation='softmax')(x)
