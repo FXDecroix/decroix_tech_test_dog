@@ -11,15 +11,17 @@ def load_dataset(path, img_resolution):
     
     dir_images= os.path.join(path,'images')
     extension = '.jpg'
+    nb_images = len([f for f in os.listdir(dir_images) if f.endswith('.jpg')])
 
-    full_dataset = np.empty((10000, img_resolution, img_resolution, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
-    labels = np.empty((10000,), dtype=np.uint8)
+    full_dataset = np.empty((nb_images, img_resolution, img_resolution, 3), dtype=np.uint8) # pre-allocating to avoid making a copy of the data
+    labels = np.empty((nb_images,), dtype=np.uint8)
 
     with open(os.path.join(path,'labels.csv')) as labelfile:
         next(labelfile) # skip first line
         labelreader = csv.reader(labelfile, delimiter = ',')
    
         for i, row in enumerate(labelreader):
+        
             img = image.load_img(os.path.join(dir_images,row[0]+extension), target_size=(img_resolution, img_resolution))
             img = image.img_to_array(img)
                 
