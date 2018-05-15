@@ -13,7 +13,7 @@ def setup_model(img_resolution):
     
     model = Model(inputs=base_model.input, outputs=predictions)
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-    
+
     return model
 
 if __name__ == '__main__':
