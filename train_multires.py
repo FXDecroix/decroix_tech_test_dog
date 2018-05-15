@@ -26,7 +26,7 @@ res_path = args.res_path
 X_256, y_256 = load_dataset(data_path, 256)
 y_256 = np_utils.to_categorical(y_256, num_classes=2)
 model256 = setup_model(256)
-history256 = model256.fit(X_256, y_256, validation_split=0.2, epochs=10, batch_size=32)
+history256 = model256.fit(X_256, y_256, validation_split=0.2, epochs=10, batch_size=16)
 
 model256.save_weights(os.path.join(res_path,'weights256_v1.h5')) 
 
@@ -38,7 +38,7 @@ with open(os.path.join(res_path,'trainHistoryDict256.p'), 'wb') as file_pi:
 X_512, y_512 = load_dataset(data_path, 512)
 y_512 = np_utils.to_categorical(y_512, num_classes=2)
 model512 = setup_model(512)
-history512 = model512.fit(X_512, y_512, validation_split=0.2, epochs=10, batch_size=32)
+history512 = model512.fit(X_512, y_512, validation_split=0.2, epochs=10, batch_size=16)
 
 model512.save_weights(os.path.join(res_path,'weights512_v1.h5')) 
 
