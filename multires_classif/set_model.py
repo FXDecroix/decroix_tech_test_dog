@@ -3,13 +3,13 @@
    
 from keras.applications.resnet50 import ResNet50  
 from keras.models import Model   
-from keras.layers import GlobalAveragePooling2D, Dense
+from keras.layers import Dense, Flatten
 
 def setup_model(img_resolution):
     base_model = ResNet50(include_top=False, weights='imagenet', input_shape = (img_resolution, img_resolution, 3))
     x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    predictions = Dense(2, activation='softmax')(x)
+    x = Flatten()(x)
+    predictions = Dense(1, activation='sigmoid')(x)
     
     model = Model(inputs=base_model.input, outputs=predictions)
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
